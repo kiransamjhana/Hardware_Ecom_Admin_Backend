@@ -4,17 +4,19 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectMongoDB from "./src/config/mongoconfig.js";
 dotenv.config();
-
+connectMongoDB();
 const PORT = process.env.PORT || 8000;
 const app = express();
 
-//connect database
-
-connectMongoDB();
 // Middlewares
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+
+//api
+import adminRouter from "./src/router/adminRouter.js";
+app.use("/api/v1/admin", adminRouter);
+//connect database
 
 app.get("/", (req, res) => {
   res.json({
@@ -27,4 +29,12 @@ app.listen(PORT, (error) => {
   error
     ? console.log(error)
     : console.log(`your server is running at http://localhost:${PORT}`);
+});
+
+app.use((error, req, res, next) => {
+  const code = error.statusCode || 500;
+  res.status(code).json({
+    status: "error",
+    message: error.message,
+  });
 });

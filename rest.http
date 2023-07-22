@@ -1,0 +1,15 @@
+@rootAPI = http://localhost:8000/api/v1
+
+
+### create new admins
+POST {{rootAPI}}/admin
+Content-Type: application/json
+
+{
+    "fName":"kiran",
+    "lName":"manandhar",
+    "phone":"1555555",
+    "password":"dkkdkdd",
+"email":"manandharkiran90@gmail.com",
+"address":"dkdkdk"
+}
