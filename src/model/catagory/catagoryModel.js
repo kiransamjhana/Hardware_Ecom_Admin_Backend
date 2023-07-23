@@ -1,4 +1,4 @@
-import adminSchema from "./adminSchema.js";
+import CatagorySchema from "./adminSchema.js";
 
 export const insertAdmin = (obj) => {
   return adminSchema(obj).save();
@@ -10,8 +10,7 @@ export const getAdminByEmail = (email) => {
 
 export const updateAdminById = ({ _id, ...rest }) => {
   return adminSchema.findByIdAndUpdate(_id, rest);
-};
-
+}; //afilter
 export const updateAdmin = (filter, updateObj) => {
   return adminSchema.findOneAndUpdate(filter, updateObj, { new: true });
 };

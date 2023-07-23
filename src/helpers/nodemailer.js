@@ -1,40 +1,101 @@
-// 2. email bodyy
+import nodemailer from "nodemailer";
+// 2. email body
 // 3. send method
 
-const accountVerificationEmail = (obj) => {
-  const { email } = obj;
+export const accountVerificationEmail = async (obj) => {
+  try {
+    const { email, fName, link } = obj;
+
+    // 1. smtp config
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: +process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    console.log("email verification");
+
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+      from: `"EST Store " <${process.env.SMTP_USER}>`, // sender address
+      to: email, // list of receivers
+      subject: "Account activation required", // Subject line
+      text: `hello ${fName}, please follow the link to activate your account. ${link}`, // plain text body
+      html: `
+    <p>
+    Hello ${fName}
+</p>
+<p>
+please follow the link below to activate your account.
+</p>
+<br />
+<br />
+<p>
+   <a href=${link}>  ${link} </a>
+</p>
+<br />
+<br />
+
+<p>
+    Regareds, <br />
+    EST Store <br />
+    Customer Support Team
+</p>
+    
+    `, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const accountVerifiedNotification = async (obj) => {
+  const { email, fName } = obj;
   // 1. smtp config
   const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
     auth: {
-        user: 'hettie.donnelly78@ethereal.email',
-        pass: '5DHgKeHqcdF6NxNpqC'
-    }
-});
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 
-const info = await transporter.sendMail({
-  from:` "Fred Foo 👻" <${process.env.SMTP_USER}>', // sender address
-  to: email,  // list of receivers
-  subject: "Account Activation requred", // Subject line
-  text: "Hello please click in the link bleow to activate your account", // plain text body
-  html: "<b>Hello world?</b>", // html body
-});
-})
-
-})
-
-<p>
-Hello ${fName}
-</p>
-<p> please follow the link below to activate your account</p>
-<br/>
-<br/>
-
-<p>
-<a href="${link}" />
+  // send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: `"EST Store " <${process.env.SMTP_USER}>`, // sender address
+    to: email, // list of receivers
+    subject: "Account has been verified", // Subject line
+    text: `hello ${fName}, Your account has been verified, you may sign in now`, // plain text body
+    html: `
+    <p>
+    Hello ${fName}
 </p>
 <p>
- Regards, <br/>
- Est store, <br>
- </p>
+Your account has been verified, you may 
+<a href="${process.env.WEB_DOMAIN}">
+sign
+</a>
+in now
+</p>
+<br />
+<br />
+ 
+
+<p>
+    Regareds, <br />
+    EST Store <br />
+    Customer Support Team
+</p>
+    
+    `, // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+};

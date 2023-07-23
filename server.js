@@ -32,6 +32,7 @@ app.listen(PORT, (error) => {
 });
 
 app.use((error, req, res, next) => {
+  console.log(error);
   const code = error.statusCode || 500;
   res.status(code).json({
     status: "error",
