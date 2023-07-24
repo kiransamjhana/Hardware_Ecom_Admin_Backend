@@ -57,6 +57,7 @@ please follow the link below to activate your account.
 
 export const accountVerifiedNotification = async (obj) => {
   const { email, fName } = obj;
+  console.log(obj);
   // 1. smtp config
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,

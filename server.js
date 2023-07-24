@@ -25,12 +25,6 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(PORT, (error) => {
-  error
-    ? console.log(error)
-    : console.log(`your server is running at http://localhost:${PORT}`);
-});
-
 app.use((error, req, res, next) => {
   console.log(error);
   const code = error.statusCode || 500;
@@ -38,4 +32,10 @@ app.use((error, req, res, next) => {
     status: "error",
     message: error.message,
   });
+});
+
+app.listen(PORT, (error) => {
+  error
+    ? console.log(error)
+    : console.log(`your server is running at http://localhost:${PORT}`);
 });

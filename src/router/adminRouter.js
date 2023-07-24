@@ -25,19 +25,18 @@ router.post("/", newAdminValidation, async (req, res, next) => {
     const result = await insertAdmin(req.body);
 
     if (result?._id) {
-      const link = ` ${process.env.WEB_DOMAIN}/admin-verification?c=${result.verificationCode}&e=${result.email}`;
-
-      console.log(link);
-      await accountVerificationEmail({
-        fName: result.fName,
-        email: result.email,
-        link,
-      });
-
       res.json({
         status: "success",
         message:
           "Please check your email and follow the instruction to activate your acount",
+      });
+
+      const link = ` ${process.env.WEB_DOMAIN}/admin-verification?c=${result.verificationCode}&e=${result.email}`;
+
+      await accountVerificationEmail({
+        fName: result.fName,
+        email: result.email,
+        link,
       });
       return;
     }
@@ -47,7 +46,6 @@ router.post("/", newAdminValidation, async (req, res, next) => {
       message: "Unable to add new admin, Please try agian later",
     });
   } catch (error) {
-    console.log(error);
     if (error.message.includes("E11000 duplicate key error")) {
       error.statusCode = 400;
       error.message =
@@ -61,7 +59,7 @@ router.post("/", newAdminValidation, async (req, res, next) => {
 //verifiyiung the new accounty
 router.post(
   "/admin-verification",
-  newAdminValidation,
+
   newAdminValidationVerification,
   async (req, res, next) => {
     try {
@@ -76,16 +74,19 @@ router.post(
       };
       const result = await updateAdmin(filter, updateObj);
 
-      result?._id
-        ? res.json({
-            status: "success",
-            message:
-              " Your account has been verified, please proceeed to login and your are welcome",
-          })
-        : res.json({
-            status: "error",
-            message: "Link is expired or invalid",
-          });
+      if (result?._id) {
+        await accountVerifiedNotification(result);
+        res.json({
+          status: "success",
+          message:
+            " Your account has been verified, please proceeed to login and your are welcome",
+        });
+        return;
+      }
+      res.json({
+        status: "error",
+        message: "Link is expired or invalid",
+      });
     } catch (error) {
       next(error);
     }
