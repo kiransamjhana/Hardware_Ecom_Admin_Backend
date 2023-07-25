@@ -1,11 +1,15 @@
 import express from "express";
-import { insertAdmin, updateAdmin } from "../model/admin/adminmodel.js";
+import {
+  getAdminByEmail,
+  insertAdmin,
+  updateAdmin,
+} from "../model/admin/adminmodel.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   newAdminValidation,
   newAdminValidationVerification,
 } from "../middleaware/joyvalidation.js";
-import { hashPassword } from "../helpers/bycrypt.js";
+import { hashPassword, compairPassword } from "../helpers/bycrypt.js";
 import {
   accountVerificationEmail,
   accountVerifiedNotification,
@@ -92,4 +96,31 @@ router.post(
     }
   }
 );
+
+//Login Admin
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await getAdminByEmail(email);
+    console.log(email, password, admin);
+    if (admin?._id) {
+      const isMatch = compairPassword(password, admin.password);
+      if (isMatch) {
+        admin.password = undefined;
+        return res.json({
+          status: "success",
+          message: "Logedin successfully",
+          admin,
+        });
+      }
+      console.log(admin);
+    }
+  } catch (error) {
+    res.json({
+      status: "error",
+      message: error.message,
+    });
+  }
+});
+
 export default router;
