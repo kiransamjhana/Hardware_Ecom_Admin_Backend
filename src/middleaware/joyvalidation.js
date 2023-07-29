@@ -48,3 +48,26 @@ export const newAdminValidationVerification = (req, res, next) => {
     next(error);
   }
 };
+
+// Category
+export const upDateCatVerification = (req, res, next) => {
+  try {
+    //define the schema
+    const schema = Joi.object({
+      title: SHORTSTR.email({ minDomainSegments: 2 }).required(),
+      _id: SHORTSTRREQ,
+      status: SHORTSTRREQ,
+    });
+
+    const { error } = schema.validate(req.body);
+
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};

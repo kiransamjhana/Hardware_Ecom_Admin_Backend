@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const adminSchema = new mongoose.Schema(
+const categorySchema = new mongoose.Schema(
   {
     status: {
       type: String,
@@ -14,7 +14,10 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    status: {
+      type: String,
+      default: "inactive",
+    },
     phone: {
       type: String,
       required: true,
@@ -48,4 +51,4 @@ const adminSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Admin", adminSchema); // create adimin table
+export default mongoose.model("Category", categorySchema); // create adimin table

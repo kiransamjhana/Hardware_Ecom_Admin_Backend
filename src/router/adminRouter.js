@@ -113,7 +113,6 @@ router.post("/login", async (req, res) => {
           admin,
         });
       }
-      console.log(admin);
     }
   } catch (error) {
     res.json({
@@ -123,4 +122,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/login", (req, res, next) => {
+  try {
+    const { email } = req.body;
+  } catch (error) {}
+});
 export default router;
