@@ -6,6 +6,7 @@ import {
 } from "../model/admin/adminmodel.js";
 import { v4 as uuidv4 } from "uuid";
 import {
+  loginValidation,
   newAdminValidation,
   newAdminValidationVerification,
 } from "../middleaware/joyvalidation.js";
@@ -14,11 +15,27 @@ import {
   accountVerificationEmail,
   accountVerifiedNotification,
 } from "../helpers/nodemailer.js";
+import { createAcessJWT } from "../helpers/jwt.js";
+import { auth, refreshAuth } from "../middleaware/authMiddleware.js";
+
 const router = express.Router();
+
+//get admin details
+router.get("/", auth, (req, res, next) => {
+  try {
+    res.json({
+      status: "success",
+      message: "Here are the user INfo",
+      user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // create new admin  for
 
-router.post("/", newAdminValidation, async (req, res, next) => {
+router.post("/", auth, newAdminValidation, async (req, res, next) => {
   try {
     const { password } = req.body;
     req.body.password = hashPassword(password);
@@ -98,7 +115,14 @@ router.post(
 );
 
 //Login Admin
-router.post("/login", async (req, res) => {
+router.post("/login", loginValidation, async (req, res) => {
+  //FIND THE USER BY EMAIL
+  //CHECK THE PASSWORD MATCH
+  //CREATE 2 JWTS
+  //CRERATE ACCESS JWT AND STORE IN SESSION TABLE: SHORT LIVE 15M
+  // CREATE REFERESE JWT AND STORE  WITH USER DATA IN USER TABLE : LONG LIVE 30DAYS
+  //RETURN THE JWTS
+
   try {
     const { email, password } = req.body;
     const admin = await getAdminByEmail(email);
@@ -107,10 +131,12 @@ router.post("/login", async (req, res) => {
       const isMatch = compairPassword(password, admin.password);
       if (isMatch) {
         admin.password = undefined;
+        const accessJWT = createAcessJWT(email);
+        const refreshJWT = createAcessJWT(email);
         return res.json({
           status: "success",
           message: "Logedin successfully",
-          admin,
+          token: { accessJWT, refreshJWT },
         });
       }
     }
@@ -122,9 +148,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/login", (req, res, next) => {
+//return the refreshJWT
+router.get("/get-accessjwt", refreshAuth, (req, res, next) => {
   try {
-    const { email } = req.body;
   } catch (error) {}
 });
+
 export default router;
