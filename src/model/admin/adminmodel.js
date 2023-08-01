@@ -8,7 +8,7 @@ export const getAdminByEmail = (email) => {
   return adminSchema.findOne({ email });
 };
 export const getOneAdmin = (filter) => {
-  return adminSchema.findOne({ filter });
+  return adminSchema.findOne(filter);
 };
 
 export const updateAdminById = ({ _id, ...rest }) => {

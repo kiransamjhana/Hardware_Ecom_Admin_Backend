@@ -2,9 +2,11 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectMongoDB from "./src/config/mongoconfig.js";
 dotenv.config();
+import connectMongoDB from "./src/config/mongoconfig.js";
 connectMongoDB();
+dotenv.config();
+
 const PORT = process.env.PORT || 8000;
 const app = express();
 

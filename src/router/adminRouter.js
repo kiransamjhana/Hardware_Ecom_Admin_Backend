@@ -3,6 +3,7 @@ import {
   getAdminByEmail,
   insertAdmin,
   updateAdmin,
+  updateAdminById,
 } from "../model/admin/adminmodel.js";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -15,8 +16,9 @@ import {
   accountVerificationEmail,
   accountVerifiedNotification,
 } from "../helpers/nodemailer.js";
-import { createAcessJWT } from "../helpers/jwt.js";
+import { createAcessJWT, createRefreshJWT } from "../helpers/jwt.js";
 import { auth, refreshAuth } from "../middleaware/authMiddleware.js";
+import { deleteNewSession } from "../model/session/sessionModel.js";
 
 const router = express.Router();
 
@@ -115,7 +117,7 @@ router.post(
 );
 
 //Login Admin
-router.post("/login", loginValidation, async (req, res) => {
+router.post("/login", loginValidation, async (req, res, next) => {
   //FIND THE USER BY EMAIL
   //CHECK THE PASSWORD MATCH
   //CREATE 2 JWTS
@@ -125,14 +127,13 @@ router.post("/login", loginValidation, async (req, res) => {
 
   try {
     const { email, password } = req.body;
-    const admin = await getAdminByEmail(email);
-    console.log(email, password, admin);
-    if (admin?._id) {
-      const isMatch = compairPassword(password, admin.password);
+    const user = await getAdminByEmail(email);
+    console.log(email, password, user);
+    if (user?._id) {
+      const isMatch = compairPassword(password, user.password);
       if (isMatch) {
-        admin.password = undefined;
         const accessJWT = createAcessJWT(email);
-        const refreshJWT = createAcessJWT(email);
+        const refreshJWT = createRefreshJWT(email);
         return res.json({
           status: "success",
           message: "Logedin successfully",
@@ -140,18 +141,36 @@ router.post("/login", loginValidation, async (req, res) => {
         });
       }
     }
-  } catch (error) {
+    //return the jwt
     res.json({
       status: "error",
-      message: error.message,
+      message: "Invalid Login details,,,,try again",
     });
+  } catch (error) {
+    next(error);
   }
 });
 
 //return the refreshJWT
-router.get("/get-accessjwt", refreshAuth, (req, res, next) => {
+router.get("/get-accessjwt", refreshAuth);
+
+//logout
+router.post("/logout", async (req, res, next) => {
   try {
-  } catch (error) {}
+    const { accessJWT, refreshJWT, _id } = req.body;
+
+    accessJWT && deleteNewSession(accessJWT);
+
+    if (refreshJWT && _id) {
+      const dt = await updateAdminById({ _id, refreshJWT: "" });
+    }
+
+    res.json({
+      status: "success",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

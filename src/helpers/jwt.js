@@ -5,7 +5,7 @@ import { insertNewSession } from "../model/session/sessionModel.js";
 
 export const createAcessJWT = async (email) => {
   const token = jwt.sign({ email }, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "1m",
+    expiresIn: "15m",
   });
 
   await insertNewSession({ token, associate: email });
@@ -21,6 +21,10 @@ export const createRefreshJWT = async (email) => {
   });
 
   const dt = await updateAdmin({ email }, { refreshJWT });
-  console.log(dt);
+
   return refreshJWT;
+};
+
+export const verifiyRefreshJWT = (token) => {
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 };

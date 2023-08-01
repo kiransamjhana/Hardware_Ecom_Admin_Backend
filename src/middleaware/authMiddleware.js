@@ -1,5 +1,9 @@
-import { createAcessJWT, verifiyAccessJWT } from "../helpers/jwt.js";
-import { getAdminByEmail } from "../model/admin/AdminModel.js";
+import {
+  createAcessJWT,
+  verifiyAccessJWT,
+  verifiyRefreshJWT,
+} from "../helpers/jwt.js";
+import { getAdminByEmail, getOneAdmin } from "../model/admin/AdminModel.js";
 
 export const auth = async (req, res, next) => {
   try {
@@ -11,12 +15,11 @@ export const auth = async (req, res, next) => {
     // extract the email and get user by email
     if (decoded?.email) {
       const user = await getAdminByEmail(decoded.email);
-      console.log(user);
 
       if (user?._id && user?.status === "active") {
         user.refreshJWT = undefined;
-        user.password - undefined;
-        const { refreshJWT, password, ...rest } = user;
+        user.password = undefined;
+
         req.userInfo = user;
         return next();
       }
@@ -44,21 +47,29 @@ export const refreshAuth = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
 
-    const decoded = verifiyAccessJWT(authorization);
+    const decoded = verifiyRefreshJWT(authorization);
     //make sure token exist in database
     if (decoded?.email) {
-    const user = await getOneAdmin({email:decoded.email, refreshJWT:authorization});
-      console.log(user);
+      const user = await getOneAdmin({
+        email: decoded.email,
+        refreshJWT: authorization,
+      });
 
       if (user?._id && user?.status === "active") {
         user.refreshJWT = undefined;
         user.password - undefined;
-       const accessJWT= createAcessJWT(decoded.email)
-        req.userInfo = user;
-        return next();
-      }
+        const accessJWT = await createAcessJWT(decoded.email);
 
- 
+        return res.json({
+          status: "success",
+          accessJWT,
+        });
+      }
+    }
+    res.status(401).json({
+      status: "error",
+      message: "Unauthorized",
+    });
   } catch (error) {
     next(error);
   }
