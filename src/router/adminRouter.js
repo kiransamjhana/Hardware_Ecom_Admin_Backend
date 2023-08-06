@@ -118,22 +118,22 @@ router.post(
 
 //Login Admin
 router.post("/login", loginValidation, async (req, res, next) => {
-  //FIND THE USER BY EMAIL
-  //CHECK THE PASSWORD MATCH
-  //CREATE 2 JWTS
   //CRERATE ACCESS JWT AND STORE IN SESSION TABLE: SHORT LIVE 15M
   // CREATE REFERESE JWT AND STORE  WITH USER DATA IN USER TABLE : LONG LIVE 30DAYS
   //RETURN THE JWTS
 
   try {
     const { email, password } = req.body;
+    //FIND THE USER BY EMAIL
     const user = await getAdminByEmail(email);
-    console.log(email, password, user);
+    //CHECK THE PASSWORD MATCH
     if (user?._id) {
       const isMatch = compairPassword(password, user.password);
+
       if (isMatch) {
-        const accessJWT = createAcessJWT(email);
-        const refreshJWT = createRefreshJWT(email);
+        //CREATE 2 JWTS
+        const accessJWT = await createAcessJWT(email);
+        const refreshJWT = await createRefreshJWT(email);
         return res.json({
           status: "success",
           message: "Logedin successfully",

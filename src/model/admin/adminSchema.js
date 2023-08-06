@@ -25,8 +25,10 @@ const adminSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+
       unique: true,
+      required: true,
+
       index: 1,
     },
 
@@ -36,7 +38,7 @@ const adminSchema = new mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
-      required: false,
+      default: false,
     },
     verificationCode: {
       type: String,

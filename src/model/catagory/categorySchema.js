@@ -6,44 +6,18 @@ const categorySchema = new mongoose.Schema(
       type: String,
       default: "inactive",
     },
-    fName: {
-      type: String,
-      required: true,
-    },
-    lName: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      default: "inactive",
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    address: {
-      type: String,
-      default: "",
-    },
-    email: {
+
+    title: {
       type: String,
       required: true,
       unique: true,
       index: 1,
     },
-
-    password: {
+    slug: {
       type: String,
+      unique: true,
+      index: 1,
       required: true,
-    },
-    isVerified: {
-      type: Boolean,
-      required: false,
-    },
-    verificationCode: {
-      type: String,
-      defualt: "",
     },
   },
   {

@@ -1,9 +1,11 @@
 import express from "express";
 import {
+  deleteCategorybyId,
   getCategory,
   insertCatagory,
+  updateAdById,
 } from "../model/catagory/categoryModel.js";
-import { upDateCatVerification } from "../middleaware/joyvalidation.js";
+import { updateCatValidation } from "../middleaware/joyvalidation.js";
 import slugify from "slugify";
 
 const router = express.Router();
@@ -13,7 +15,7 @@ router.get("/", async (req, res, next) => {
     const result = await getCategory();
     res.json({
       status: "success",
-      message: "",
+      message: "New Category has been added",
       result,
     });
   } catch (error) {
@@ -21,9 +23,10 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", upDateCatVerification, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const { title } = req.body;
+    console.log(title);
     !title &&
       res.json({
         status: "error",
@@ -40,12 +43,55 @@ router.post("/", upDateCatVerification, async (req, res, next) => {
       ? res.json({
           status: "success",
           message: " New Category Has been added",
-          result,
         })
       : res.json({
           status: "error",
           message: " Unable to add the categoroy",
         });
+  } catch (error) {
+    if (error.message.includes("E11000 duplicate key error")) {
+      error.statusCode = 200;
+      error.message =
+        "The slug for the category already exist, please change the catgegory name ans try again.";
+    }
+    next(error);
+  }
+});
+router.put("/", updateCatValidation, async (req, res, next) => {
+  try {
+    const result = await updateAdById(req.body);
+
+    result?._id
+      ? res.json({
+          status: "success",
+          message: "The category has been updated",
+        })
+      : res.json({
+          status: "error",
+          message: "Error, Unable to udpate new category.",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/:_id", async (req, res, next) => {
+  const { _id } = req.params;
+  try {
+    if (_id) {
+      const result = await deleteCategorybyId(_id);
+      result?._id &&
+        res.json({
+          status: "success",
+          message: "The category has been deleted",
+        });
+
+      return;
+    }
+
+    res.json({
+      status: "error",
+      message: "Error, Unable to process your request.",
+    });
   } catch (error) {
     next(error);
   }

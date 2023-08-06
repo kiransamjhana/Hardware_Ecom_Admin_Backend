@@ -6,5 +6,5 @@ export const insertNewSession = (obj) => {
 //tokken should be string
 
 export const deleteNewSession = async (token) => {
-  const dt = await sessionSchema.findOneAndDelete({ tokent });
+  const dt = await sessionSchema.findOneAndDelete(token);
 };
