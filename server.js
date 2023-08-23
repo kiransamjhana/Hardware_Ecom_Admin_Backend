@@ -18,10 +18,12 @@ app.use(express.json());
 //api
 import adminRouter from "./src/router/adminRouter.js";
 import categoryRouter from "./src/router/categoryRouter.js";
+import paymentOptionRouter from "./src/router/paymentOptionRouter.js";
 import { auth } from "./src/middleaware/authMiddleware.js";
 
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/category", auth, categoryRouter);
+app.use("/api/v1/payment", auth, paymentOptionRouter);
 //connect database
 
 app.get("/", (req, res) => {
