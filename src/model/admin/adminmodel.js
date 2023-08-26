@@ -11,6 +11,10 @@ export const getOneAdmin = (filter) => {
   return adminSchema.findOne(filter);
 };
 
+export const getAllAdmins = () => {
+  return adminSchema.find();
+};
+
 export const updateAdminById = ({ _id, ...rest }) => {
   return adminSchema.findByIdAndUpdate(_id, rest);
 }; //afilter

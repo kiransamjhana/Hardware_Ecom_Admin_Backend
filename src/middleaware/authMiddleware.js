@@ -57,7 +57,7 @@ export const refreshAuth = async (req, res, next) => {
 
       if (user?._id && user?.status === "active") {
         user.refreshJWT = undefined;
-        user.password - undefined;
+        // user.password = undefined;
         const accessJWT = await createAcessJWT(decoded.email);
 
         return res.json({
@@ -65,6 +65,7 @@ export const refreshAuth = async (req, res, next) => {
           accessJWT,
         });
       }
+      req.userInfo = user;
     }
     res.status(401).json({
       status: "error",

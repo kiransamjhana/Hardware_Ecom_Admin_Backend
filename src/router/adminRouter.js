@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAdminByEmail,
+  getAllAdmins,
   insertAdmin,
   updateAdmin,
   updateAdminById,
@@ -29,6 +30,18 @@ router.get("/", auth, (req, res, next) => {
       status: "success",
       message: "Here are the user INfo",
       user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/display", auth, async (req, res, next) => {
+  try {
+    const user = await getAllAdmins();
+    res.json({
+      status: "success",
+      message: "Here are the user INfo",
+      user,
     });
   } catch (error) {
     next(error);
@@ -78,6 +91,37 @@ router.post("/", auth, newAdminValidation, async (req, res, next) => {
     next(error);
   }
 });
+router.put("/", auth, async (req, res, next) => {
+  try {
+    const { password, ...info } = req.body;
+    console.log(req.body.email);
+    const user = await getAdminByEmail(req.body.email);
+    console.log(typeof password);
+    const isMatched = compairPassword(password, user.password);
+    if (isMatched) {
+      const result = await updateAdminById(info);
+      if (result?._id) {
+        res.json({
+          status: "success",
+          message: "Able to update the profile.",
+        });
+      }
+      return res.json({
+        status: "error",
+        message: "Unble to update the profile.",
+      });
+    }
+    res.json({
+      status: "error",
+      message:
+        "The entered password doesn't match to your current password. Please enter the correct one.",
+    });
+
+    //TODO create code and add with req.body
+  } catch (error) {
+    next(error);
+  }
+});
 
 //verifiyiung the new accounty
 router.post(
@@ -92,8 +136,8 @@ router.post(
         verificationCode: c,
       };
       const updateObj = {
-        isVerified: true,
-        verificationcode: "",
+        status: "active",
+        verificationCode: "",
       };
       const result = await updateAdmin(filter, updateObj);
 
