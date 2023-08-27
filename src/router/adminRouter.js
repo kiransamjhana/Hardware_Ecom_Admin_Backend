@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getAdminByEmail,
+  getAdminById,
   getAllAdmins,
   insertAdmin,
   updateAdmin,
@@ -96,33 +97,58 @@ router.put("/", auth, async (req, res, next) => {
     const { password, ...info } = req.body;
     console.log(req.body.email);
     const user = await getAdminByEmail(req.body.email);
-    console.log(typeof password);
+
     const isMatched = compairPassword(password, user.password);
     if (isMatched) {
       const result = await updateAdminById(info);
       if (result?._id) {
-        res.json({
+        return res.json({
           status: "success",
-          message: "Able to update the profile.",
+          message: "The profile has been updated",
         });
       }
-      return res.json({
-        status: "error",
-        message: "Unble to update the profile.",
-      });
     }
+
+    //TODO create code and add with req.body
     res.json({
       status: "error",
       message:
         "The entered password doesn't match to your current password. Please enter the correct one.",
     });
-
-    //TODO create code and add with req.body
   } catch (error) {
     next(error);
   }
 });
 
+//change admin password
+router.put("/change-password", auth, async (req, res, next) => {
+  try {
+    const { password, NewPassword } = req.body;
+    const { _id } = req.userInfo;
+    const users = await getAdminById(_id);
+    console.log(users);
+    const isMatched = compairPassword(password, users.password);
+    console.log("===========", isMatched);
+    if (isMatched) {
+      const pp = hashPassword(NewPassword);
+      const result = await updateAdmin(_id, pp);
+      console.log(result);
+      if (result?._id) {
+        return res.json({
+          status: "success",
+          message: "The password has been updated",
+        });
+      }
+    }
+
+    res.json({
+      status: "error",
+      message: "Unble to change the password.",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 //verifiyiung the new accounty
 router.post(
   "/admin-verification",

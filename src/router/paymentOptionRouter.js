@@ -1,18 +1,17 @@
 import express from "express";
-import {
-  deleteCategorybyId,
-  getCategory,
-  insertCatagory,
-  updateAdById,
-} from "../model/catagory/categoryModel.js";
+
 import { newpaymentOptionValidation } from "../middleaware/joyvalidation.js";
-import { insertPy } from "../model/paymentOptions/paymentModel.js";
+import {
+  deletePy,
+  getPayementOpton,
+  insertPy,
+} from "../model/paymentOptions/paymentModel.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const result = await getCategory();
+    const result = await getPayementOpton();
     res.json({
       status: "success",
       message: "New Category has been added",
@@ -62,7 +61,7 @@ router.delete("/:_id", async (req, res, next) => {
   const { _id } = req.params;
   try {
     if (_id) {
-      const result = await deleteCategorybyId(_id);
+      const result = await deletePy(_id);
       result?._id &&
         res.json({
           status: "success",
