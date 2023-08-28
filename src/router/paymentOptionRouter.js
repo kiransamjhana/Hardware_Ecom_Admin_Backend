@@ -3,18 +3,19 @@ import express from "express";
 import { newpaymentOptionValidation } from "../middleaware/joyvalidation.js";
 import {
   deletePy,
-  getPayementOpton,
+  getAllPymentOption,
   insertPy,
+  updatePYById,
 } from "../model/paymentOptions/paymentModel.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const result = await getPayementOpton();
+    const result = await getAllPymentOption();
     res.json({
       status: "success",
-      message: "New Category has been added",
+      message: "Here are the list of payment options",
       result,
     });
   } catch (error) {
@@ -24,19 +25,6 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", newpaymentOptionValidation, async (req, res, next) => {
   try {
-    // const { title } = req.body;
-    // console.log(title);
-    // !title &&
-    //   res.json({
-    //     status: "error",
-    //     message: "categroy title is required",
-    //   });
-
-    // const obj = {
-    //   title,
-    //   slug: slugify(title, { trim: true, lower: true }),
-    // };
-
     const result = await insertPy(req.body);
     result?._id
       ? res.json({
@@ -45,7 +33,7 @@ router.post("/", newpaymentOptionValidation, async (req, res, next) => {
         })
       : res.json({
           status: "error",
-          message: " Unable to add the payment category",
+          message: " Unable to add the payment Method",
         });
   } catch (error) {
     if (error.message.includes("E11000 duplicate key error")) {
@@ -53,6 +41,27 @@ router.post("/", newpaymentOptionValidation, async (req, res, next) => {
       error.message =
         "The slug for the category already exist, please change the catgegory name ans try again.";
     }
+    next(error);
+  }
+});
+
+//updating the payment Informaiton
+router.put("/", async (req, res, next) => {
+  try {
+    const result = await updatePYById(req.body);
+    if (result?._id) {
+      res.json({
+        status: "success",
+        message: " This payment method has been updated",
+      });
+      return;
+    }
+
+    res.json({
+      status: "error",
+      message: "Unable to update the payment method, please try again",
+    });
+  } catch (error) {
     next(error);
   }
 });

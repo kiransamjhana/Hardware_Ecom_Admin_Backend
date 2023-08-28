@@ -1,17 +1,21 @@
 import paymentSchema from "./paymentSchema.js";
 
 export const insertPy = (obj) => {
-  return adminSchema(obj).save();
+  return paymentSchema(obj).save();
 };
 
 export const getPayementOpton = (obj) => {
-  return adminSchema.findOne(obj);
+  return paymentSchema.findOne(obj);
+};
+
+export const getAllPymentOption = () => {
+  return paymentSchema.find();
 };
 
 export const updatePYById = ({ _id, ...rest }) => {
-  return adminSchema.findByIdAndUpdate(_id, rest);
+  return paymentSchema.findByIdAndUpdate(_id, rest);
 }; //afilter
 
 export const deletePy = (_id) => {
-  return adminSchema.findByIdAndDelete(_id);
+  return paymentSchema.findByIdAndDelete(_id);
 };

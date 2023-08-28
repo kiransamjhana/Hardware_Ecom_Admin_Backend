@@ -131,7 +131,7 @@ router.put("/change-password", auth, async (req, res, next) => {
     console.log("===========", isMatched);
     if (isMatched) {
       const pp = hashPassword(NewPassword);
-      const result = await updateAdmin(_id, pp);
+      const result = await updateAdmin({ _id }, { password: pp });
       console.log(result);
       if (result?._id) {
         return res.json({
@@ -143,7 +143,7 @@ router.put("/change-password", auth, async (req, res, next) => {
 
     res.json({
       status: "error",
-      message: "Unble to change the password.",
+      message: "Your current password doesnot match,, Please try again",
     });
   } catch (error) {
     next(error);
