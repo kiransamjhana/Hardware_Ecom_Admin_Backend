@@ -13,3 +13,17 @@ Content-Type: application/json
 "email":"manandharkiran90@gmail.com",
 "address":"dkdkdk"
 }
+
+
+### add new product
+POST {{rootAPI}}/product
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcmFuQHlhaG9vLmNvbSIsImlhdCI6MTY5MzYyNjE0MCwiZXhwIjoxNjkzNjI3OTQwfQ.EYfjL5V9p1XGV3N0p2WUQtmPJee7nQMByYGCRlgHKpc
+
+{
+    "status":"active",
+     "name":"iphone",
+      "price":"50",
+      "quantity":"5",
+      "description":"akkdkdkakkakdkkd"
+}
