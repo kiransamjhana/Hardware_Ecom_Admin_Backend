@@ -1,11 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import dotenv from "dotenv";
-dotenv.config();
+
+import path from "path";
+
 import connectMongoDB from "./src/config/mongoconfig.js";
 connectMongoDB();
-dotenv.config();
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -14,6 +16,11 @@ const app = express();
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+const __dirname = path.resolve();
+console.log(__dirname);
+
+//converting public folder to static serving folder
+app.use(express.static(path.join(__dirname, "/public")));
 
 //api
 import adminRouter from "./src/router/adminRouter.js";
