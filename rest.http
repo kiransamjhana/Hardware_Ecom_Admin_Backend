@@ -4,6 +4,7 @@
 ### create new admins
 POST {{rootAPI}}/admin
 Content-Type: application/json
+uthorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcmFuQHlhaG9vLmNvbSIsImlhdCI6MTY5MzYyNjE0MCwiZXhwIjoxNjkzNjI3OTQwfQ.EYfjL5V9p1XGV3N0p2WUQtmPJee7nQMByYGCRlgHKpc
 
 {
     "fName":"kiran",
@@ -22,8 +23,11 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcmFuQHlhaG9v
 
 {
     "status":"active",
-     "name":"iphone",
+     "name":"ihone",
       "price":"50",
       "quantity":"5",
       "description":"akkdkdkakkakdkkd"
 }
+
+//order router
+GET {{{rootAPI}}}/order

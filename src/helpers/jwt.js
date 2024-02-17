@@ -13,6 +13,7 @@ export const createAcessJWT = async (email) => {
 };
 
 export const verifiyAccessJWT = (token) => {
+  console.log(token);
   return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 };
 export const createRefreshJWT = async (email) => {

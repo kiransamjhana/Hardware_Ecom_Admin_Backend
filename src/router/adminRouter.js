@@ -68,7 +68,7 @@ router.post("/", auth, newAdminValidation, async (req, res, next) => {
           "Please check your email and follow the instruction to activate your acount",
       });
 
-      const link = ` ${process.env.WEB_DOMAIN}/admin-verification?c=${result.verificationCode}&e=${result.email}`;
+      const link = ` ${process.env.WEB_DOMAIN}/user-verification?c=${result.verificationCode}&e=${result.email}`;
 
       await accountVerificationEmail({
         fName: result.fName,

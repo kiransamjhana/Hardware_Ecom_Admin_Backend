@@ -1,9 +1,9 @@
 ### Packages Need for backend
 
 Express
-Cors 
+Cors
 Mongoose
-morgon 
+morgon
 dot env
 bcryptjs
 
@@ -13,5 +13,5 @@ nodemailer
 jsonwebtoken
 
 COde to excute this setup as foolow
-
-npm i express mongoose cors morgan dotenv  bcryptjs
+npm
+npm i express mongoose cors morgan dotenv bcryptjs
