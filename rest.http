@@ -29,5 +29,8 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcmFuQHlhaG9v
       "description":"akkdkdkakkakdkkd"
 }
 
-//order router
-GET {{{rootAPI}}}/order
+### post user
+GET  {{rootAPI}}/order/edit
+Content-Type: application/json
+
+{"id":"65dc29f0d4ddda296d1038bd"}

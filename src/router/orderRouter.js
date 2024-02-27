@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getOrderByEmail,
+  getOrderById,
   getOrders,
   insertOrder,
 } from "../model/Order/order.js";
@@ -20,17 +21,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-// router.get("/:_id?", async (req, res, next) => {
-//     try {
-//       const singlePyOp = await getPayementOpton();
-//       res.json({
-//         status: "success",
-//         message: "Here is the selected payment options",
-//         singlePyOp,
-//       });
-//     } catch (error) {
-//       next(error);
-//     }
-//   });
+router.get("/edit/:_id?", async (req, res, next) => {
+  try {
+    const { _id } = req.params;
+    console.log(_id);
+    const result = await getOrderById(_id);
+    res.json({
+      status: "success",
+      message: "Here is the selected order",
+      result,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
