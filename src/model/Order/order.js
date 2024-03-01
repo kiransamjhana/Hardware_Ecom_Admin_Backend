@@ -18,9 +18,35 @@ export const getOrders = () => {
   return order.find();
 };
 
-export const updateOrderById = ({ _id, ...rest }) => {
-  return order.findByIdAndUpdate(_id, rest);
-}; //afilter
+export const updateOrderById = async ({ _id, ...rest }) => {
+  try {
+    const updatedData = {
+      ...rest,
+      phone: "0444444", // Set the desired order status here
+    };
+
+    const updatedOrder = await order.findOneAndUpdate({ _id }, updatedData, {
+      new: true,
+    });
+
+    console.log("Updated order:", updatedOrder);
+
+    return {
+      status: "success",
+      message: "Order updated successfully",
+      data: updatedOrder,
+    };
+  } catch (error) {
+    console.error("Error updating order:", error);
+
+    return {
+      status: "error",
+      message: "Failed to update order",
+      error: error.message,
+    };
+  }
+};
+
 export const updateOrder = (filter, updateObj) => {
   return order.findOneAndUpdate(filter, updateObj, { new: true });
 };
