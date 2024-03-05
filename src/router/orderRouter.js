@@ -42,14 +42,13 @@ router.get("/edit/:_id?", async (req, res, next) => {
 router.put("/update/:_id?", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    console.log(req.params, "order router");
-    // Set a default order status directly on the server side
-    const defaultOrderStatus = "999939399393";
+    console.log(req.params, "order router"); //Set a default order status directly on the server side
+    const defaultOrderStatus = "delivered";
 
     // Perform the updateOrderStatus Axios call with the default orderStatus
     const updateResult = await updateOrderById(
       { _id },
-      { phone: defaultOrderStatus }
+      { orderStatus: defaultOrderStatus }
     );
 
     // Check if the update was successful

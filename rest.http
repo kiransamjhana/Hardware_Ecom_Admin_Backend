@@ -41,4 +41,4 @@ PUT {{rootAPI}}/order/update
 Content-Type: application/json
 
 {"_id":"65dc29f0d4ddda296d1038bd",
-"orderStatus":"delivered"}
+"orderStatus":"recrrr"}
