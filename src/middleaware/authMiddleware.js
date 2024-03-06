@@ -3,7 +3,7 @@ import {
   verifiyAccessJWT,
   verifiyRefreshJWT,
 } from "../helpers/jwt.js";
-import { getAdminByEmail, getOneAdmin } from "../model/admin/AdminModel.js";
+import { getAdminByEmail, getOneAdmin } from "../model/admin/adminmodel.js";
 
 export const auth = async (req, res, next) => {
   try {
