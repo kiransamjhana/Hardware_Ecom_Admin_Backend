@@ -42,27 +42,23 @@ router.get("/edit/:_id?", async (req, res, next) => {
 router.put("/update/:_id?", async (req, res, next) => {
   try {
     const { _id } = req.params;
-    console.log(req.params, "order router"); //Set a default order status directly on the server side
-    const defaultOrderStatus = "delivered";
+    const { data } = req.body;
+    const { orderStatus } = data;
+    console.log(orderStatus, "from update");
+    // Perform the database update based on the provided _id and orderStatus
+    const result = await updateOrderById(_id, { orderStatus });
 
-    // Perform the updateOrderStatus Axios call with the default orderStatus
-    const updateResult = await updateOrderById(
-      { _id },
-      { orderStatus: defaultOrderStatus }
-    );
-
-    // Check if the update was successful
-    if (updateResult?.status === "success") {
-      return res.json({
+    if (result?._id) {
+      res.json({
         status: "success",
-        message: "The order status has been updated",
+        message: " This product has been updated",
       });
+      return;
     }
 
-    // Handle the case where the update was not successful
     res.json({
       status: "error",
-      message: "Failed to update order status. Please try again.",
+      message: "Unable to update at this time",
     });
   } catch (error) {
     next(error);
